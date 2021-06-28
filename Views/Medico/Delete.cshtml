@@ -1,0 +1,63 @@
+@model Turnos.Models.Medico
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="widht=device-widht" />
+    <title>Eliminar</title>
+</head>
+
+<body>
+
+    <h3>¿Seguro deseas eliminar al siguiente médico?</h3>
+    <div>
+        <hr />
+        <div class="row">
+            <div class="col s12 m4 l3"></div>
+            <div class="col s12 m4 l6">
+                <div class="card blue-grey lighten-2">
+                    <div class="card-content">
+                        <span class="card-title"><b>@Html.DisplayFor(model => model.Nombre) @Html.DisplayFor(model =>
+                                model.Apellido)</b></span>
+                        <hr />
+                        <br>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input asp-for="Direccion" readonly="readonly" />
+                                <label asp-for="Direccion" readonly="readonly"></label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input asp-for="Telefono" readonly="readonly" />
+                                <label asp-for="Telefono" readonly="readonly"></label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input asp-for="Email" readonly="readonly" />
+                                <label asp-for="Email" readonly="readonly"></label>
+                            </div>
+
+                            <div class="input-field col s12">
+                                <input asp-for="HorarioAtencionDesde" type="time" readonly="readonly" />
+                                <label asp-for="HorarioAtencionDesde"></label>
+                            </div>
+
+                            <div class="input-field col s12">
+                                <input asp-for="HorarioAtencionHasta" type="time" readonly="readonly" />
+                                <label asp-for="HorarioAtencionHasta"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action blue-grey">
+                        <form asp-action="Delete">
+                            <input asp-for="IdMedico" type="submit" value="Eliminar" class="waves-effect waves-light btn-small orange lighten-1"></input>
+                            <a class="right" asp-action="Index">Volver</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Página principal";
+}
+
+<br>
+<br>
+<br>
+<div class="row">
+    <div class="col s12 m4">
+        <div class="card">
+            <div class="card-image center blue-grey darken-3">
+                <i class="large material-icons white-text">star_rate</i>
+                <a asp-controller="Especialidad" asp-action="Create"
+                    class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+            </div>
+            <div class="card-content">
+                <span class="card-title"><b>Especialidades:</b></span>
+                <p>Acá podras editar, crear o eliminar especialidades, con el fin de asignar cada una
+                    a un médico.
+                </p>
+            </div>
+            <div class="card-action teal">
+                <a asp-controller="Especialidad" asp-action="Index">Ver más</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m4">
+        <div class="card">
+            <div class="card-image center grey lighten-1 ">
+                <i class="large material-icons white-text">local_hospital</i>
+                <a asp-controller="Medico" asp-action="Create"
+                    class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+            </div>
+            <div class="card-content">
+                <span class="card-title"><b>Medicos:</b></span>
+                <p>Acá podras ver la información de los médicos registrados. Además de poder editar,
+                    crear o eliminar información de ellos.
+                </p>
+            </div>
+            <div class="card-action teal">
+                <a asp-controller="Medico" asp-action="Index">Ver más</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col s12 m4">
+        <div class="card">
+            <div class="card-image center blue-grey lighten-2">
+                <i class="large material-icons white-text">accessible</i>
+                <a asp-controller="Paciente" asp-action="Create"
+                    class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+            </div>
+            <div class="card-content">
+                <span class="card-title"><b>Pacientes:</b></span>
+                <p>Acá podras ver la información de los pacientes registrados. Además de poder editar,
+                    crear o eliminar información de ellos.
+                </p>
+            </div>
+            <div class="card-action teal">
+                <a asp-controller="Paciente" asp-action="Index">Ver más</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m4">
+        <div class="card">
+            <div class="card-image center brown">
+                <i class="large material-icons white-text">pending_actions</i>
+                <a asp-controller="Turno" asp-action="GrabarTurno"
+                    class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+            </div>
+            <div class="card-content">
+                <span class="card-title"><b>Turnos:</b></span>
+                <p>Acá podras añadir turnos para los pacientes, asignándole un médico específico.
+                </p>
+            </div>
+            <div class="card-action teal">
+                <a asp-controller="Turno" asp-action="Index">Asignar turno</a>
+            </div>
+        </div>
+    </div>
+</div>

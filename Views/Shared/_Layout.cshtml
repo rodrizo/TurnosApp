@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Http;
+@* Control de sesion de usuario, servirá para cualquier vista porque esta es la vista padre*@
+ @{
+    if(Context.Session.GetString("usuario") == null)
+    {
+        Context.Response.Redirect("/Login");//redirigimos a login
+    }
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+@*VISTA PADRE QUE AGRUPA A TODAS LAS DEMÁS VISTAS*@
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Turnos</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+    <link rel="stylesheet" href="~/css/site.css"/>
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="~/css/materialize.min.css" media="screen,projection" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body> @*Acá irá todo el contenido de nuestra página padre*@
+    <header>
+        <nav>
+            <div class="nav-wrapper grey darken-4">
+                <a href="#!" class="brand-logo center">Sistema de turnos</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Especialidad" asp-action="Index">Especialidad</a></li>
+                    <li><a asp-controller="Medico" asp-action="Index">Medico</a></li>
+                    <li><a asp-controller="Paciente" asp-action="Index">Paciente</a></li>
+                    <li><a asp-controller="Turno" asp-action="Index">Turnos</a></li>
+                    <li><a class="material-icons prefix" asp-controller="Login" asp-action="Logout">logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <ul class="sidenav" id="mobile-demo">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-controller="Especialidad" asp-action="Index">Especialidad</a></li>
+            <li><a asp-controller="Medico" asp-action="Index">Medico</a></li>
+            <li><a asp-controller="Paciente" asp-action="Index">Paciente</a></li>
+            <li><a asp-controller="Turno" asp-action="Index">Turnos</a></li>
+            <li><a class="material-icons prefix" asp-controller="Login" asp-action="Logout">logout</a></li>
+        </ul>
+    </header>
+    <div class="container"> @*El div ejecuta la función RenderBody*@
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            @* &copy; 2020 - Turnos - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="~/js/materialize.min.js"></script>
+    @RenderSection("Scripts", required: false)
+    <script>
+        // Or with jQuery
+        $(document).ready(function () {
+            $('.sidenav').sidenav();
+        });
+
+        $('.dropdown-trigger').dropdown();
+
+        $(document).ready(function () {
+            $('.timepicker').timepicker();
+        });
+        
+        $(document).ready(function(){
+            $('select').formSelect();
+        });
+    </script>
+</body>
+
+</html>

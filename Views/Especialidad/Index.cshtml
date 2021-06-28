@@ -1,0 +1,42 @@
+@model IEnumerable<Turnos.Models.Especialidad>
+@*Agregamos el modelo especialidad, a traves de la directica @Models, este modelo será iterable*@
+
+<p>
+    <a class="btn-floating btn-large waves-effect waves-light  cyan darken-2" asp-action="Create"><i
+            class="material-icons">folder_special</i>Crear</a>
+</p>
+@*Solo nos servirá para mostrar el table, pues en layout donde vamos a mandar a llamarlo, ya está el doctype html*@
+<table class="responsive-table striped z-depth-1 centered">
+    <thead class="cyan darken-3  white-text">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion) @*El displaynamefor escribe el nombre real del
+                    campo (Descripción)*@
+                @*El objeto model recibe descripción*@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @*AQUÍ IRÁ EL CÓDIGO PARA MOSTRAR LOS REGISTROS DE LA BD*@
+        @foreach (var item in Model)
+        {
+            <tr> @*tr es para registros*@
+                <td>@*td es para datos*@
+                    @Html.DisplayFor(modelItem => item.Descripcion) @*Definimos el objeto ModelItem como parámetro de
+                        nuestra función,
+                        y lo direccionamos al objeto Item
+                        Obtiene del modelo el item descripcion y con DIsplayFor, muestra el contenido*@
+                </td>
+                <td>
+                    <a asp-controller="Especialidad" asp-route-id="@item.IdEspecialidad" asp-action="Edit"><i
+                            class="material-icons black-text">edit</i></a>
+                    <a asp-controller="Especialidad" asp-route-id="@item.IdEspecialidad" asp-action="Delete"><i
+                            class="material-icons red-text">delete</i></a>
+                    @*Añadimos un AspAction referenciando a Edit, esto con el fin de ejecutar el método edit de cada
+                        especialidad*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

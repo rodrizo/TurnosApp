@@ -1,0 +1,33 @@
+@model Turnos.Models.Especialidad;
+<h4>Especialidad</h4>
+<hr>
+<div class="row">
+    <div class="col s12">
+        <div class="card teal lighten-3">
+            <div class="card-content white-text">
+                <div>
+                    <div asp-validation-summary="ModelOnly"></div> @*Nos ayuda a validar cualquier contenido html que
+                        esté en nuestro formulario, como campos vacíos, etc*@
+                    <input type="hidden" asp-for="IdEspecialidad" />
+                    <form asp-controller="Especialidad" asp-action="Edit">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">try</i>
+                            <label asp-for="Descripcion"></label>
+                            <input asp-for="Descripcion" />
+                            <span asp-validation-for="Descripcion"></span>
+                        </div>
+ 
+                        <button class="btn waves-effect waves-light" type="submit">Editar
+                            <i class="material-icons right">send</i>
+                        </button>
+
+                        <a class="waves-effect waves-light btn-small indigo darken-3 right" asp-action="Index"><i
+                                class="material-icons left">undo</i>Regresar
+                        </a>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

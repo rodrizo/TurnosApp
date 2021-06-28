@@ -1,0 +1,50 @@
+@model Turnos.Models.Paciente
+
+<h4>Detalles del paciente</h4>
+<hr />
+<div class="row">
+    <div class="">
+        <div class="card">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input asp-for="Nombre" type="text" readonly="readonly">
+                        <label asp-for="Nombre"></label>
+                        <span asp-validation-for="Nombre"></span>
+                    </div>
+                    <div class="input-field col s6">
+                        <input asp-for="Apellido" readonly="readonly">
+                        <label asp-for="Apellido"></label>
+                        <span asp-validation-for="Apellido"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input asp-for="Direccion" type="text" readonly="readonly">
+                        <label asp-for="Direccion"></label>
+                        <span asp-validation-for="Direccion"></span>
+                    </div>
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input asp-for="Telefono" type="text" readonly="readonly">
+                        <label asp-for="Telefono"></label>
+                        <span asp-validation-for="Telefono"></span>
+                    </div>
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input asp-for="Email" type="text" readonly="readonly">
+                        <label asp-for="Email"></label>
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                    <div class="col s12">
+                        <a class="waves-effect waves-light btn-small indigo darken-3 center" asp-action="Index"><i
+                                class="material-icons left">undo</i>Regresar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

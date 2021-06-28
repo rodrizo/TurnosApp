@@ -1,0 +1,52 @@
+@model Turnos.Models.Medico
+
+<!DOCTYPE html>
+
+<body>
+
+    <div>
+        <hr />
+        <div class="row">
+            <div class="col s12 m4 l3"></div>
+            <div class="col s12 m4 l6">
+                <div class="card blue-grey lighten-2">
+                    <div class="card-content">
+                        <span class="card-title"><b>@Html.DisplayFor(model => model.Nombre) @Html.DisplayFor(model =>
+                                model.Apellido)</b>
+                                
+                                <dt>
+                                    <h6>@Html.DisplayNameFor(model => model.HorarioAtencionDesde): @Html.DisplayFor(model => model.HorarioAtencionDesde)</h6>
+                                </dt>
+                                 <dt>
+                                    <h6>@Html.DisplayNameFor(model => model.HorarioAtencionHasta) : @Html.DisplayFor(model => model.HorarioAtencionHasta)</h6>
+                                </dt>
+                        </span>
+                        <br>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input asp-for="Direccion" readonly="readonly" />
+                                <label asp-for="Direccion" readonly="readonly"></label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input asp-for="Telefono" readonly="readonly" />
+                                <label asp-for="Telefono" readonly="readonly"></label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input asp-for="Email" readonly="readonly" />
+                                <label asp-for="Email" readonly="readonly"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action blue-grey">
+                        <form asp-action="Edit">
+                            <input type="hidden" asp-for="IdMedico"></input>
+                            <a class="waves-effect waves-light btn-small orange lighten-1" asp-action="Edit"
+                                asp-route-id="@Model.IdMedico">Editar</a>
+                            <a class="right" asp-action="Index">Volver</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

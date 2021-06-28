@@ -1,0 +1,231 @@
+@model Turnos.Models.Turno
+@Html.AntiForgeryToken() @*se le ordene que debe generar el elemento token, funciona cuando usamos vistas sin forms, o cuando se generan vistas con info sensible*@
+@{
+    ViewBag.Title = "Asignación de turnos";
+}
+
+<div class="row">
+    <div class="col s6">
+        <label asp-for="IdMedico">Médico</label>
+        <select asp-for="IdMedico" asp-items="ViewBag.IdMedico"></select>
+    </div>
+    <div class="col s6">
+        <label asp-for="IdPaciente">Paciente</label>
+        <select asp-for="IdPaciente" asp-items="ViewBag.IdPaciente"></select>
+    </div>
+</div>
+<br />
+
+<div id="ModalTurno" class="modal"> 
+    <div class="modal-content">
+        <h4>Turno</h4>
+        <form>
+            <div>
+                <label>Inicio</label>
+                <input type="text" id="txtFechaHoraInicio" readonly="readonly">
+            </div>
+            <div>
+                <label>Fin</label>
+                <input type="text" id="txtFechaHoraFin" readonly="readonly">
+            </div>
+            <div>
+                <label>Paciente</label>
+                <input type="text" id="txtPaciente" readonly="readonly"> 
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="btnEliminar" class="modal-close waves-effect waves-red btn-flat">Eliminar</a> 
+        <a href="#" id="btnGuardar" class="modal-close waves-effect waves-green btn-flat">Guardar</a> 
+        <a href="#" id="btnCerrar" class="modal-close waves-effect waves-grey btn-flat">Cerrar</a> 
+    </div>
+</div>
+
+<div id="CalendarioTurnos"></div>
+ 
+<link href="~/fullcalendar/fullcalendar.css" rel="stylesheet" />
+<link href="~/fullcalendar/fullcalendar.print.css" rel="stylesheet" media="print" />
+@section Scripts{
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="~/fullcalendar/fullcalendar.min.js"></script>
+<script src="~/fullcalendar/locale/es.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.modal').modal(); //Inicializar los eventos show y hide del modal
+        var horarioDesde = "";//para delimitar el calendario
+        var horarioHasta = "";//
+        var turnos = []; //array
+        var turnoSeleccionado = [];
+
+        ObtenerTurnosYActualizar($('#IdMedico').val()); //Seleccionamos el valor del IdMedico
+
+        $('#IdMedico').change(function(){ //Actualiza el calendario según el médico que se seleccione
+            ObtenerTurnosYActualizar(this.value);
+
+        });
+
+
+        function ObtenerTurnosYActualizar(idMedico){
+            turnos = [];
+            $.ajax({
+                type: "GET",
+                url: "Turno/ObtenerTurnos", //Se va a ir al controlador, y manda a llamar la acción ObtenerTurno
+                data: { 'IdMedico' : idMedico },
+                success: function(datos) {
+                    $.each(datos, function (i, v){
+                        //poner iniciales en minuscula, referente a idTurno, etc
+                        turnos.push({ //Se irán creando nuevos elementos en el array turnos
+                            //Se le añade el valor del objeto a cada uno
+                            idTurno : v.idTurno,
+                            idPaciente : v.idPaciente,
+                            idMedico : v.idMedico,
+                            start: moment(v.fechaHoraInicio).format('YYYY-MM-DD[T]HH:mm:ss'), //moment pertenece a la librería que incluimos
+                            end: v.fechaHoraFin != null ? moment(v.fechaHoraFin).format('YYYY-MM-DD[T]HH:mm:ss'): null,
+                            paciente: v.paciente,
+                            //if fechaHoraFin != null, entonces (moment.x), sino, null
+                            //Preguntamos que si la propiedad fechaHoraFin es distinto de null, se le aplica moment
+                            //Esto por si no se tiene fecha de finalización
+                            //start y end las necesita el calendario para establecer el horario exacto en el que el turno se especifica
+                        });
+                    })
+                    GenerarCalendario(turnos); //se genera el calendario
+                },
+                error: function(){
+                    alert('Error al obtener turnos');
+                }
+            })
+        }
+
+        function GenerarCalendario(turnos){ //Creamos esta función para borrar calendarios anteriores, 
+                                            //con el fin de que salgan calendarios diferentes según el médico
+            $.ajax({ //utilizamos el metodo ajax, ya viene incorporada en la librería JQuery, invocamos endpoints de horario con este metodo
+                type: "GET", //petición para enviar parametros a traves de la URL
+                url: "Medico/TraerHorarioAtencionDesde",
+                data: { "idMedico": $('#IdMedico').val() }, //Accedemos al elemento select del medico, con el simbolo $
+                async: false, //se ejecutará de manera asíncrona
+                success: function (resultado){
+                    horarioDesde = resultado; //si el metodo ajax retorna una respuesta success, coloca el resultado en "resultado"
+                },
+                error: function (){
+                    alert("Error al traer el horario de atención desde el médico.");//de ser un resultado erroneo, nos lanza un alert
+                }
+            });
+
+            $.ajax({ //utilizamos el metodo ajax, ya viene incorporada en la librería JQuery, invocamos endpoints de horario con este metodo
+                type: "GET", //petición para enviar parametros a traves de la URL
+                url: "Medico/TraerHorarioAtencionHasta",
+                data: { "idMedico": $('#IdMedico').val() }, //Accedemos al elemento select del medico, con el simbolo $
+                async: false, //se ejecutará de manera asíncrona
+                success: function (resultado) {
+                    horarioHasta = resultado; //si el metodo ajax retorna una respuesta success, coloca el resultado en "resultado"
+                },
+                error: function () {
+                    alert("Error al traer el horario de atención hasta el médico.");//de ser un resultado erroneo, nos lanza un alert
+                }
+            });
+
+
+            $("#CalendarioTurnos").fullCalendar('destroy');//Destruimos el calendario, desaparece, y posteriormente
+                                                            //se crea con las nuevas propiedades de los nuevos turnos
+
+            $('#CalendarioTurnos').fullCalendar({
+                contentHeight: 'auto',
+                defaultDate: new Date(),
+                slotLabelFormat: "HH:mm", //formato de horas
+                defaultView: 'agendaWeek', //vista semanal, por default, puede cambiarse a dia o mes
+                header: { //seccion header, aparecerán botones según lo que agreguemos
+                    left: 'prev, next today', //boton de semana previa, semana posterior, y redirigir a hoy
+                    right: 'month, agendaWeek, agendaDay',
+                },
+                slotDuration: '00:30', //duración 
+                nowIndicator: true, //indicador de hora actual
+                allDaySlot: false,
+                selectable: true, //seleccionar la celda correspondiente a un intervalo de turnos
+                eventLimit: true, //determinar un limite en el evento que definimos, con posibilidad de establecerlo en 30min
+                minTime: horarioDesde, //Se puede delimitar el calendario según la hora minima y maxima
+                maxTime: horarioHasta, //en este caso, sería el horario de los médicos
+                events: turnos, 
+                select: function(fechaHoraInicio, fechaHoraFin){ //colocará las fechas que tiene establecida el objeto
+                    turnoSeleccionado = { //igual a 0, para que el modal se abra, y se proceda a crear el turno
+                        idTurno: 0,
+                        start: fechaHoraInicio,
+                        end: fechaHoraFin
+                    };
+                    AbrirPopup();
+                },
+                eventClick: function (turnoClickeado){
+                    turnoSeleccionado = turnoClickeado;  //sobreescribir un objeto con el otro
+                    AbrirPopup();
+                } //Esta propiedad se dispara cuando clickeamos a un turno que está creado
+            })
+
+        }
+
+        function AbrirPopup()
+        {
+            $('#txtFechaHoraInicio').val(turnoSeleccionado.start.format('YYYY-MM-DD')+'T'+turnoSeleccionado.start.format('HH:mm:ss'));
+            $('#txtFechaHoraFin').val(turnoSeleccionado.end.format('YYYY-MM-DD')+'T'+turnoSeleccionado.end.format('HH:mm:ss'));
+             //formateamos el resultado que obtiene la fecha del turno
+            if(turnoSeleccionado.idTurno == 0){//si el turno no existe, se oculta el botón eliminar
+                $('#btnGuardar').show();
+                $('#btnEliminar').hide();
+                $('#txtPaciente').val($('#IdPaciente option:selected').text());//accedemos al texto del listbox que está seleccionado
+            }else{//si el turno existe, se habilita la opción eliminar
+                $('#btnGuardar').hide();
+                $('#btnEliminar').show();
+                $('#txtPaciente').val(turnoSeleccionado.paciente);
+            }
+            $('#ModalTurno').modal('open');//el modal se muestra en la app
+        }
+
+        $('#btnGuardar').click(function(){
+            var datosDelTurno = {
+                IdPaciente: $('#IdPaciente').val(),
+                IdMedico: $('#IdMedico').val(),
+                fechaHoraInicio: $('#txtFechaHoraInicio').val(),
+                fechaHoraFin: $('#txtFechaHoraFin').val()
+            }
+            GrabarTurno(datosDelTurno);
+        }) //identifica si se hace click en el botón
+
+        function GrabarTurno(data){
+            $.ajax({
+                type: "POST",
+                url: 'Turno/GrabarTurno',
+                data: {'turno': data}, 
+                //Obtenemos el valor del elemento oculto que se genera en la vista, lo reconocerá y validará correctamente en el header
+                headers: {'RequestVerificationToken' : $('input[name="__RequestVerificationToken"]').val()},
+                success: function (e) { //si la grabación sale exitosa, e = ok, usando el idmedico como parametro
+                    if (e.ok){
+                        ObtenerTurnosYActualizar($('#IdMedico').val());//se visualizará el turno automáticamente
+                    }
+                },
+                error: function(){
+                    alert('Error al grabar el turno');
+                }
+
+            })
+        }
+
+        $('#btnEliminar').click(function(){
+            if (confirm('¿Está seguro de eliminar el turno?')){
+                $.ajax({
+                    type: "POST",
+                    url: 'Turno/EliminarTurno',
+                    data: {'IdTurno' : turnoSeleccionado.idTurno },
+                    headers: {'RequestVerificationToken' : $('input[name="__RequestVerificationToken"]').val()},
+                    success: function (e){
+                        if (e.ok){
+                            ObtenerTurnosYActualizar($('#IdMedico').val());
+                        }
+                    },
+                    error: function(){
+                        alert('Error al eliminar turno');   
+                    }
+                })
+            }
+        })
+    })
+</script>
+}
